@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     const res = await fetch(fetchUrl, { next: { revalidate: 3600 } });
 
     if (!res.ok) {
-        throw new Error(`Failed to fetch from url: ${res.status}`);
+      throw new Error(`Failed to fetch from url: ${res.status}`);
     }
 
     const buffer = await res.arrayBuffer();
@@ -39,13 +39,25 @@ export async function GET(request: NextRequest) {
       const sheet = workbook.Sheets[name];
       const data = XLSX.utils.sheet_to_json<Schedule>(sheet);
 
-      return data
-        .filter(
-          (item) =>
-            item.__EMPTY != null &&
-            String(item.__EMPTY).includes(normalizedQuery),
-        )
-        .map((item) => ({ ...item, date: name } as ScheduleResult));
+      let currentSubject = "";
+      const studentRows: ScheduleResult[] = [];
+
+      for (const item of data) {
+        if (item["ใบรายชื่อผู้เข้าสอบ"] === "รายวิชา" && item.__EMPTY) {
+          currentSubject = String(item.__EMPTY);
+        } else if (
+          item.__EMPTY != null &&
+          String(item.__EMPTY).includes(normalizedQuery)
+        ) {
+          studentRows.push({
+            ...item,
+            date: name,
+            subject: currentSubject,
+          } as ScheduleResult);
+        }
+      }
+
+      return studentRows;
     });
 
     return NextResponse.json(result);

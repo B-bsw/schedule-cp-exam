@@ -4,15 +4,14 @@ import { ScheduleResult } from "@/types/type";
 import { useState, useEffect } from "react";
 
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sheetUrl, setSheetUrl] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [debouncedUrl, setDebouncedUrl] = useState("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [sheetUrl, setSheetUrl] = useState<string>("");
+  const [debouncedQuery, setDebouncedQuery] = useState<string>("");
+  const [debouncedUrl, setDebouncedUrl] = useState<string>("");
   const [results, setResults] = useState<ScheduleResult[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasSearched, setHasSearched] = useState<boolean>(false);
 
-  // Debounce
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedQuery(searchQuery);
@@ -121,10 +120,11 @@ export default function Home() {
                   <table className="w-full text-left text-sm whitespace-nowrap">
                     <thead className="bg-gray-50/50 text-gray-500 uppercase tracking-wider text-xs border-b border-gray-200">
                       <tr>
-                        <th className="px-6 py-4 font-semibold">วันที่สอบ</th>
                         <th className="px-6 py-4 font-semibold">
                           รหัสประจำตัว
                         </th>
+                        <th className="px-6 py-4 font-semibold">วันที่สอบ</th>
+                        <th className="px-6 py-4 font-semibold">วิชา</th>
                         {/*<th className="px-6 py-4 font-semibold">
                           ลำดับที่นั่ง
                         </th>*/}
@@ -138,13 +138,19 @@ export default function Home() {
                           key={i}
                           className="hover:bg-gray-50/50 transition-colors duration-150"
                         >
-                          <td className="px-6 py-4 text-gray-900 font-medium">
-                            {schedule.date}
-                          </td>
                           <td className="px-6 py-4">
                             <span className="font-mono bg-gray-100 text-gray-800 px-2 py-1 rounded-md text-xs">
                               {schedule.__EMPTY}
                             </span>
+                          </td>
+                          <td className="px-6 py-4 text-gray-900 font-medium">
+                            {schedule.date}
+                          </td>
+                          <td
+                            className="px-6 py-4 text-gray-900 text-sm max-w-xs text-wrap"
+                            title={schedule.subject}
+                          >
+                            {schedule.subject || "-"}
                           </td>
                           {/*<td className="px-6 py-4 text-gray-600">
                             {schedule.ใบรายชื่อผู้เข้าสอบ || "-"}
