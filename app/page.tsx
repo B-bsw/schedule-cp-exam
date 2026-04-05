@@ -1,65 +1,170 @@
-import Image from "next/image";
+"use client";
+
+import { ScheduleResult } from "@/types/type";
+import { useState, useEffect } from "react";
 
 export default function Home() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sheetUrl, setSheetUrl] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [debouncedUrl, setDebouncedUrl] = useState("");
+  const [results, setResults] = useState<ScheduleResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
+
+  // Debounce
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+      setDebouncedUrl(sheetUrl);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchQuery, sheetUrl]);
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      if (!debouncedQuery.trim() || !debouncedUrl.trim()) {
+        setResults([]);
+        setHasSearched(false);
+        return;
+      }
+
+      setIsLoading(true);
+      setHasSearched(true);
+
+      try {
+        const apiUrl = `/api?q=${encodeURIComponent(debouncedQuery)}&url=${encodeURIComponent(debouncedUrl)}`;
+        const res = await fetch(apiUrl);
+        if (res.ok) {
+          const data = await res.json();
+          setResults(data);
+        } else {
+          setResults([]);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setResults([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchResults();
+  }, [debouncedQuery, debouncedUrl]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans selection:bg-gray-200">
+      <div className="max-w-4xl mx-auto px-6 py-24 space-y-12">
+        <header className="space-y-4 text-center">
+          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">
+            CP ค้นหาตารางสอบ
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-gray-500 text-sm sm:text-base">
+            กรุณาใส่ลิงก์ Google Sheets และรหัสนักศึกษาเพื่อตรวจสอบวันและเวลาสอบ
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+        </header>
+
+        <div className="relative max-w-xl mx-auto space-y-4">
+          <div className="relative">
+            <input
+              type="text"
+              value={sheetUrl}
+              onChange={(e) => setSheetUrl(e.target.value)}
+              placeholder="ลิงก์ Google Sheets (เช่น https://docs.google.com/spreadsheets/d/...)"
+              className="w-full bg-white px-6 py-3 text-sm rounded-2xl border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all placeholder:text-gray-400"
+              spellCheck={false}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
+          <div className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="รหัสนักศึกษา (เช่น 673380065-6)"
+              className="w-full bg-white px-6 py-4 text-base sm:text-lg rounded-2xl border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all placeholder:text-gray-400"
+              spellCheck={false}
+              disabled={!sheetUrl.trim()}
+            />
+            {isLoading && (
+              <div className="absolute right-6 top-1/2 -translate-y-1/2">
+                <div className="w-5 h-5 border-2 border-gray-200 border-t-gray-900 rounded-full animate-spin" />
+              </div>
+            )}
+          </div>
         </div>
-      </main>
-    </div>
+
+        <div className="space-y-6 pt-4">
+          {!isLoading && hasSearched && results.length === 0 && (
+            <div className="text-center py-16 px-4 bg-white rounded-3xl border border-gray-100 shadow-sm">
+              <p className="text-gray-500">
+                ไม่พบข้อมูลที่ตรงกับ{" "}
+                <span className="font-medium text-gray-900">
+                  `&quot;{debouncedQuery}`&quot;
+                </span>
+              </p>
+            </div>
+          )}
+
+          {results.length > 0 && (
+            <div className="space-y-4">
+              <div className="flex justify-between items-center px-2">
+                <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+                  ผลการค้นหา
+                </h2>
+                <span className="text-sm font-medium bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
+                  พบ {results.length} รายการ
+                </span>
+              </div>
+
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm whitespace-nowrap">
+                    <thead className="bg-gray-50/50 text-gray-500 uppercase tracking-wider text-xs border-b border-gray-200">
+                      <tr>
+                        <th className="px-6 py-4 font-semibold">วันที่สอบ</th>
+                        <th className="px-6 py-4 font-semibold">
+                          รหัสประจำตัว
+                        </th>
+                        {/*<th className="px-6 py-4 font-semibold">
+                          ลำดับที่นั่ง
+                        </th>*/}
+                        <th className="px-6 py-4 font-semibold">อาคาร</th>
+                        <th className="px-6 py-4 font-semibold">ห้อง</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {results.map((schedule, i) => (
+                        <tr
+                          key={i}
+                          className="hover:bg-gray-50/50 transition-colors duration-150"
+                        >
+                          <td className="px-6 py-4 text-gray-900 font-medium">
+                            {schedule.date}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="font-mono bg-gray-100 text-gray-800 px-2 py-1 rounded-md text-xs">
+                              {schedule.__EMPTY}
+                            </span>
+                          </td>
+                          {/*<td className="px-6 py-4 text-gray-600">
+                            {schedule.ใบรายชื่อผู้เข้าสอบ || "-"}
+                          </td>*/}
+                          <td className="px-6 py-4 text-gray-600">
+                            {schedule.__EMPTY_2 || "-"}
+                          </td>
+                          <td className="px-6 py-4 text-gray-600">
+                            {schedule.__EMPTY_3 || "-"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </main>
   );
 }
