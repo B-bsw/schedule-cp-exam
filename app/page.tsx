@@ -79,7 +79,7 @@ export default function Home() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="รหัสนักศึกษา (เช่น 673380065-6)"
+              placeholder="รหัสนักศึกษา (เช่น 601234567-8)"
               className="w-full bg-white px-6 py-4 text-base sm:text-lg rounded-2xl border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all placeholder:text-gray-400"
               spellCheck={false}
               disabled={!sheetUrl.trim()}
