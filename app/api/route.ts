@@ -38,7 +38,6 @@ export async function GET(request: NextRequest) {
       const sheet = workbook.Sheets[name];
       const data = XLSX.utils.sheet_to_json<Schedule>(sheet);
 
-      console.log(data);
       let currentSubject = "";
       let currentBuilding = "";
       const studentRows: ScheduleResult[] = [];
@@ -50,7 +49,9 @@ export async function GET(request: NextRequest) {
           currentBuilding = String(item.__EMPTY);
         } else if (
           item.__EMPTY != null &&
-          String(item.__EMPTY).includes(normalizedQuery)
+          String(item.__EMPTY).includes(normalizedQuery) &&
+          item.__EMPTY_3 != null &&
+          String(item.__EMPTY_3).trim() !== ""
         ) {
           studentRows.push({
             ...item,
