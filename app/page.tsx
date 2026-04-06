@@ -128,8 +128,8 @@ export default function Home() {
                         {/*<th className="px-6 py-4 font-semibold">
                           ลำดับที่นั่ง
                         </th>*/}
-                        <th className="px-6 py-4 font-semibold">อาคาร</th>
                         <th className="px-6 py-4 font-semibold">ห้อง</th>
+                        <th className="px-6 py-4 font-semibold">เลขที่นั่ง</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
@@ -156,7 +156,7 @@ export default function Home() {
                             {schedule.ใบรายชื่อผู้เข้าสอบ || "-"}
                           </td>*/}
                           <td className="px-6 py-4 text-gray-600">
-                            {schedule.__EMPTY_2 || "-"}
+                            {schedule.building || "-"}
                           </td>
                           <td className="px-6 py-4 text-gray-600">
                             {schedule.__EMPTY_3 || "-"}

@@ -9,7 +9,6 @@ function getExportUrl(inputUrl: string): string {
     return `https://docs.google.com/spreadsheets/d/${match[1]}/export?format=xlsx`;
   }
 
-  // If it's already an export URL or something else, just return it
   return inputUrl;
 }
 
@@ -39,12 +38,16 @@ export async function GET(request: NextRequest) {
       const sheet = workbook.Sheets[name];
       const data = XLSX.utils.sheet_to_json<Schedule>(sheet);
 
+      console.log(data);
       let currentSubject = "";
+      let currentBuilding = "";
       const studentRows: ScheduleResult[] = [];
 
       for (const item of data) {
         if (item["ใบรายชื่อผู้เข้าสอบ"] === "รายวิชา" && item.__EMPTY) {
           currentSubject = String(item.__EMPTY);
+        } else if (item["ใบรายชื่อผู้เข้าสอบ"] === "ห้องสอบ" && item.__EMPTY) {
+          currentBuilding = String(item.__EMPTY);
         } else if (
           item.__EMPTY != null &&
           String(item.__EMPTY).includes(normalizedQuery)
@@ -53,13 +56,13 @@ export async function GET(request: NextRequest) {
             ...item,
             date: name,
             subject: currentSubject,
+            building: currentBuilding,
           } as ScheduleResult);
         }
       }
 
       return studentRows;
     });
-
     return NextResponse.json(result);
   } catch (error) {
     console.error("Error processing excel:", error);

@@ -9,4 +9,5 @@ export interface Schedule {
 export interface ScheduleResult extends Schedule {
   date: string;
   subject?: string;
+  building?: string;
 }
