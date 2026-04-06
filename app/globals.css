@@ -19,6 +19,10 @@
   }
 }
 
+:root {
+  background-color: #fafafa;
+}
+
 /*body {
   background: var(--background);
   color: var(--foreground);

@@ -122,7 +122,7 @@ export default function Home() {
                     key={i}
                     className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 hover:shadow-md transition-shadow duration-200 flex flex-col gap-3"
                   >
-                    <div className="flex justify-between items-start">
+                    <div className="flex justify-between items-start text-nowrap gap-1">
                       <span className="font-mono bg-gray-100 text-gray-800 px-3 py-1 rounded-lg text-sm font-medium">
                         {schedule.__EMPTY}
                       </span>
@@ -138,7 +138,7 @@ export default function Home() {
                         className="text-gray-900  text-base truncate overflow-clip"
                         title={schedule.subject}
                       >
-                        วิชา:{" "}
+                        รายวิชา:{" "}
                         <span className="font-semibold">
                           {schedule.subject || "-"}
                         </span>
@@ -154,7 +154,7 @@ export default function Home() {
                           {schedule.building || "-"}
                         </p>
                       </div>
-                      <div>
+                      <div className="flex flex-col items-end">
                         <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
                           เลขที่นั่ง
                         </p>
@@ -171,8 +171,8 @@ export default function Home() {
               <div className="hidden sm:block bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm whitespace-nowrap">
-                    <thead className="bg-gray-50/50 text-gray-500 uppercase tracking-wider text-xs border-b border-gray-200">
-                      <tr>
+                    <thead className="bg-zinc-100/50 text-gray-500 uppercase tracking-wider text-xs border-b border-gray-200">
+                      <tr className="[&_th]:border-r [&_th]:last:border-r-0 [&_th]:border-gray-200">
                         <th className="px-6 py-4 font-semibold">
                           รหัสประจำตัว
                         </th>
@@ -182,7 +182,7 @@ export default function Home() {
                         <th className="px-6 py-4 font-semibold">เลขที่นั่ง</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-gray-100 [&_td]:border-r [&_td]:last:border-r-0 [&_td]:border-gray-200 [&_tr]:even:bg-zinc-100/40">
                       {results.map((schedule, i) => (
                         <tr
                           key={i}
