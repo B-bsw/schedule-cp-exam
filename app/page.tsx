@@ -115,7 +115,60 @@ export default function Home() {
                 </span>
               </div>
 
-              <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+              {/* Mobile View: Cards */}
+              <div className="flex flex-col sm:hidden gap-4">
+                {results.map((schedule, i) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 hover:shadow-md transition-shadow duration-200 flex flex-col gap-3"
+                  >
+                    <div className="flex justify-between items-start">
+                      <span className="font-mono bg-gray-100 text-gray-800 px-3 py-1 rounded-lg text-sm font-medium">
+                        {schedule.__EMPTY}
+                      </span>
+                      <span
+                        className={`text-sm font-medium px-3 py-1 rounded-lg ${schedule.date?.includes("บ่าย") ? "text-orange-600 bg-orange-50" : "text-blue-600 bg-blue-50"}`}
+                      >
+                        {schedule.date}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h3
+                        className="text-gray-900  text-base truncate overflow-clip"
+                        title={schedule.subject}
+                      >
+                        วิชา:{" "}
+                        <span className="font-semibold">
+                          {schedule.subject || "-"}
+                        </span>
+                      </h3>
+                    </div>
+
+                    <div className="mt-auto pt-3 border-t border-gray-100 flex justify-between gap-4">
+                      <div>
+                        <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
+                          ห้องสอบ
+                        </p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {schedule.building || "-"}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
+                          เลขที่นั่ง
+                        </p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {schedule.__EMPTY_3 || "-"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop View: Table */}
+              <div className="hidden sm:block bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm whitespace-nowrap">
                     <thead className="bg-gray-50/50 text-gray-500 uppercase tracking-wider text-xs border-b border-gray-200">
@@ -125,9 +178,6 @@ export default function Home() {
                         </th>
                         <th className="px-6 py-4 font-semibold">วันที่สอบ</th>
                         <th className="px-6 py-4 font-semibold">วิชา</th>
-                        {/*<th className="px-6 py-4 font-semibold">
-                          ลำดับที่นั่ง
-                        </th>*/}
                         <th className="px-6 py-4 font-semibold">ห้อง</th>
                         <th className="px-6 py-4 font-semibold">เลขที่นั่ง</th>
                       </tr>
@@ -143,18 +193,19 @@ export default function Home() {
                               {schedule.__EMPTY}
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-gray-900 font-medium">
-                            {schedule.date}
+                          <td className="px-6 py-4 font-medium">
+                            <span
+                              className={`px-3 py-1 rounded-lg text-xs ${schedule.date?.includes("บ่าย") ? "text-orange-600 bg-orange-50" : "text-blue-600 bg-blue-50"}`}
+                            >
+                              {schedule.date}
+                            </span>
                           </td>
                           <td
-                            className="px-6 py-4 text-gray-900 text-sm max-w-xs text-wrap"
+                            className="px-6 py-4 text-gray-900 text-sm font-medium max-w-xs text-wrap"
                             title={schedule.subject}
                           >
                             {schedule.subject || "-"}
                           </td>
-                          {/*<td className="px-6 py-4 text-gray-600">
-                            {schedule.ใบรายชื่อผู้เข้าสอบ || "-"}
-                          </td>*/}
                           <td className="px-6 py-4 text-gray-600">
                             {schedule.building || "-"}
                           </td>
