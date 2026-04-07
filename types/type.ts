@@ -11,3 +11,9 @@ export interface ScheduleResult extends Schedule {
   subject?: string;
   building?: string;
 }
+
+export interface SheetSource {
+  id: number;
+  name: string;
+  url: string;
+}
