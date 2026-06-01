@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "CP EXAM",
-  description: "ทำขึ้นสำหรับเช็คตารางสอบอย่างรวดเร็วของนักศึกษาวิทยาลัยการคอมพิวเตอร์ มหาวิทยลัยขอนแก่น",
+  description:
+    "ทำขึ้นสำหรับเช็คตารางสอบอย่างรวดเร็วของนักศึกษาวิทยาลัยการคอมพิวเตอร์ มหาวิทยลัยขอนแก่น",
 };
 
 export default function RootLayout({
